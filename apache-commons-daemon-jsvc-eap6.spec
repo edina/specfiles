@@ -45,7 +45,7 @@
 
 Name:           apache-commons-daemon-jsvc-eap6
 Version:        1.0.15
-Release:        6.redhat_2%{?dist}
+Release:        7.redhat_2%{?dist}
 Epoch:          1
 Summary:        Defines API to support an alternative invocation mechanism
 License:        ASL 2.0
@@ -81,7 +81,6 @@ BuildRequires:  unzip
 BuildRequires:  jpackage-utils >= 0:1.6
 
 Requires:       libcap
-Requires:       apache-commons-daemon-eap6
 
 %description
 The scope of this package is to define an API in line with the current
@@ -109,22 +108,6 @@ Container for the source distribution of %{name}.
 #%patch3 -p0 -b .s390x
 #%patch4 -p0 -b .ppc
 chmod 644 src/samples/*
-%if %with native
-# use the one from docbook instead of getting it from the net
-catalogfile=`xmlcatalog /etc/xml/catalog "-//OASIS//DTD DocBook XML V4.1.2//EN"|sed -e s:"file\://"::`
-sed -i -e s:"http\://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd":$catalogfile: src/native/unix/man/jsvc.1.xml
-
-pushd src/native/unix
-###%%%%if 0%{?rhel} >= 6
-#work with docbook-xsl (from docbook-maven on rhel 6)
-unzip -q %{_javadir}/docbook-xsl-resources.zip
-export XSL_DIR=$XSL_DIR:`pwd`/docbook/html:`pwd`/docbook/manpages:`pwd`/docbook/common
-xmlto -x docbook/manpages/docbook.xsl man man/jsvc.1.xml
-###%%%else
-###xmlto man man/jsvc.1.xml
-###%%%endif
-popd
-%endif
 sed -i -e '2425s/powerpc/powerpc*/' src/native/unix/configure
 
 zip -q -r ../%{name}-%{version}-src.zip *
@@ -140,8 +123,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 %if %with native
-install -Dpm 0644 src/native/unix/jsvc.1 $RPM_BUILD_ROOT%{_mandir}/man1/jsvc.eap6.1
-install -Dpm 755 src/native/unix/jsvc $RPM_BUILD_ROOT%{_bindir}/jsvc-eap6/jsvc
+install -Dpm 755 src/native/unix/jsvc $RPM_BUILD_ROOT%{_bindir}/jsvc
 %endif
 
 %if %with zip
@@ -157,9 +139,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc LICENSE*
-%dir %{_bindir}/jsvc-eap6
-%{_bindir}/jsvc-eap6/jsvc
-%{_mandir}/man1/jsvc.eap6.1*
+%{_bindir}/jsvc
 %endif
 
 %if %with zip
@@ -169,6 +149,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Nov 12 2014 Andrew Seales <andrew.seales@ed.ac.uk> - 1:1.0.16-7.redhat_2
+- Remove docs due to broken RPMs, move binary location
 * Fri Jul 11 2014 Permaine Cheung <pcheung@redhat.com> - 1:1.0.15-6.redhat_2
 - Rebuild
 
