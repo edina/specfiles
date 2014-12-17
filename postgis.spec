@@ -170,7 +170,10 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc postgis*.pdf
 
-%changelog
+#changelog
+* Wed Dec 17 2014 Andrew Seales <andrew.seales@ed.ac.uk> 1.5.8-1
+- Update to v1.5.8 to work with official postgresql 9.2 RPM
+
 * Tue Oct 4 2011 Devrim GÜNDÜZ <devrim@gunduz.org> - 1.5.3-1
 - Update to 1.5.3
 
