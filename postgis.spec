@@ -1,23 +1,26 @@
-%{!?javabuild:%define	javabuild 1}
+%{!?javabuild:%define	javabuild 0}
 %{!?utils:%define	utils 1}
 %{!?gcj_support:%define	gcj_support 1}
 
 %global majorversion 1.5
+%global _libdir /usr/pgsql-9.2/lib
+%global _datadir /usr/pgsql-9.2/share
+%global _bindir /usr/pgsql-9.2/bin
 
 Summary:	Geographic Information Systems Extensions to PostgreSQL
 Name:		postgis
-Version:	1.5.3
+Version:	1.5.8
 Release:	1%{?dist}
 License:	GPLv2+
 Group:		Applications/Databases
-Source0:	http://postgis.refractions.net/download/%{name}-%{version}.tar.gz
-Source2:	http://www.postgis.org/download/%{name}-%{version}.pdf
+Source0:	http://download.osgeo.org/postgis/source/%{name}-%{version}.tar.gz
+Source2:	http://download.osgeo.org/postgis/docs/%{name}-%{version}.pdf
 Source4:	filter-requires-perl-Pg.sh
 URL:		http://postgis.refractions.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	postgresql-devel >= 8.2, proj-devel, geos-devel >= 3.1.1, byacc, proj-devel, flex, sinjdoc, java, java-devel, ant
-BuildRequires:	gtk2-devel, libxml2-devel
+BuildRequires:	proj-devel, geos-devel >= 3.1.1, byacc, proj-devel, flex, sinjdoc, java, java-devel, ant
+BuildRequires:	gtk2-devel, libxml2-devel, postgresql92-server, postgresql92-devel
 Requires:	postgresql >= 8.2, geos >= 3.1.1, proj
 
 %description
@@ -71,9 +74,9 @@ The postgis-utils package provides the utilities for PostGIS.
 cp -p %{SOURCE2} .
 
 %build
-%configure --with-gui
+%configure --with-gui --with-pgconfig=/usr/pgsql-9.2/bin/pg_config
 #make %{?_smp_mflags} LPATH=`pg_config --pkglibdir` shlib="%{name}.so"
-make LPATH=`pg_config --pkglibdir` shlib="%{name}.so"
+make LPATH=`/usr/pgsql-9.2/bin/pg_config --pkglibdir` shlib="%{name}.so"
 
 %if %javabuild
 export BUILDXML_DIR=%{_builddir}/%{name}-%{version}/java/jdbc
@@ -92,17 +95,15 @@ popd
 %install
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
-install -d %{buildroot}%{_libdir}/pgsql/
-install -d  %{buildroot}%{_datadir}/pgsql/contrib/
-install -m 644 *.sql %{buildroot}%{_datadir}/pgsql/contrib/
+install -d %{buildroot}%{_libdir}
+install -d  %{buildroot}%{_datadir}/contrib/
+install -m 644 *.sql %{buildroot}%{_datadir}/contrib/
 install -m 755 loader/shp2pgsql loader/shp2pgsql-gui %{buildroot}%{_bindir}/
 rm -f  %{buildroot}%{_datadir}/*.sql
 
-if [ "%{_libdir}" = "/usr/lib64" ] ; then
-	mv %{buildroot}%{_datadir}/pgsql/contrib/%{name}-%{majorversion}/postgis.sql %{buildroot}%{_datadir}/pgsql/contrib/postgis-64.sql
-	mv %{buildroot}%{_datadir}/pgsql/contrib/%{name}-%{majorversion}/postgis_upgrade_13_to_15.sql %{buildroot}%{_datadir}/pgsql/contrib/%{name}-%{majorversion}/postgis_upgrade_13_to_15-64.sql
-	mv %{buildroot}%{_datadir}/pgsql/contrib/%{name}-%{majorversion}/postgis_upgrade_14_to_15.sql %{buildroot}%{_datadir}/pgsql/contrib/%{name}-%{majorversion}/postgis_upgrade_14_to_15-64.sql
-fi
+#mv %{buildroot}/usr/share/pgsql/contrib/%{name}-%{majorversion}/postgis.sql %{buildroot}%{_datadir}/contrib/postgis-64.sql
+#mv %{buildroot}/usr/share/pgsql/contrib/%{name}-%{majorversion}/postgis_upgrade_13_to_15.sql %{buildroot}%{_datadir}/contrib/postgis_upgrade_13_to_15-64.sql
+#mv %{buildroot}/usr/share/pgsql/contrib/%{name}-%{majorversion}/postgis_upgrade_14_to_15.sql %{buildroot}%{_datadir}/contrib/postgis_upgrade_14_to_15-64.sql
 
 %if %javabuild
 install -d %{buildroot}%{_javadir}
@@ -132,9 +133,9 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc COPYING CREDITS NEWS TODO README.%{name} doc/html loader/README.* doc/%{name}.xml doc/ZMSgeoms.txt 
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/pgsql/postgis-*.so
-%{_datadir}/pgsql/contrib/*.sql
-%{_datadir}/pgsql/contrib/%{name}-%{majorversion}/*.sql
+%attr(755,root,root) %{_libdir}/postgis-*.so
+%{_datadir}/contrib/*.sql
+%{_datadir}/contrib/%{name}-%{majorversion}/*.sql
 
 %if %javabuild
 %files jdbc
