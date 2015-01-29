@@ -45,7 +45,7 @@
 
 Name:           apache-commons-daemon-jsvc-eap6
 Version:        1.0.15
-Release:        8.redhat_2%{?dist}
+Release:        9.redhat_2%{?dist}
 Epoch:          1
 Summary:        Defines API to support an alternative invocation mechanism
 License:        ASL 2.0
@@ -116,7 +116,7 @@ zip -q -r ../%{name}-%{version}-src.zip *
 %if %with native
 cd src/native/unix
 %configure --with-java=%{java_home}
-make %{?_smp_mflags} EXTRA_CFLAGS="-DJSVC_UMASK=022"
+make %{?_smp_mflags} EXTRA_CFLAGS="-DJSVC_UMASK=002"
 %endif
 
 
