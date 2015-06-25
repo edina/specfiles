@@ -29,7 +29,7 @@ BuildRequires:  java-1_6_0-openjdk-devel
 %endif
 %endif
 
-%if 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?rhel_version} || 0%{?centos_ver}
 BuildRequires:  httpd >= 2.2 httpd-devel >= 2.2 pcre-devel java-1.6.0-openjdk-devel gcc-c++ ruby-libs
 %endif
 
@@ -40,20 +40,20 @@ BuildRequires:  httpd >= 2.2 httpd-devel >= 2.2 pcre-devel java-1.6.0-openjdk-de
 %define       apache2_libexecdir        %(/usr/sbin/apxs2 -q LIBEXECDIR)
 %define       apache2_cflags            %(/usr/sbin/apxs2 -q CFLAGS)
 %endif
-%if 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?rhel_version} || 0%{?centos_ver}
 %define       apache2_sysconfdir        %(/usr/sbin/apxs -q SYSCONFDIR)
 %define       apache2_libexecdir        %(/usr/sbin/apxs -q LIBEXECDIR)
 %define       apache2_cflags            %(/usr/sbin/apxs -q CFLAGS)
 %endif
 Summary:        Connectors between Apache and Tomcat Servlet Container
-Version:        1.2.37
-Release:        4.1
+Version:        1.2.40
+Release:        1.0
 License:        Apache Software License ..
 Group:          Productivity/Networking/Web/Frontends
 %if 0%{?suse_version}
 Requires:       apache2
 %endif
-%if 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?rhel_version} || 0%{?centos_ver}
 Requires:       httpd >= 2.2
 %endif
 Provides:       mod_jk = %{version}-%{release}
@@ -61,7 +61,7 @@ Provides:       mod_jk-ap20
 %if 0%{?suse_version}
 Provides:       mod_jk-ap20:%{_libdir}/apache2/mod_jk.so
 %endif
-%if 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?rhel_version} || 0%{?centos_ver}
 Provides:       mod_jk-ap20:%{_libdir}/httpd/modules/mod_jk.so
 %endif
 Obsoletes:      mod_jk-ap20 < %{version}
@@ -107,7 +107,7 @@ Authors:
 # prepare apr
 export APACHE2_CFLAGS="%{apache2_cflags}"
 cd $RPM_BUILD_DIR/%{connectors_root}/native
-%if 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?rhel_version} || 0%{?centos_ver}
 ./configure --with-apxs=/usr/sbin/apxs
 %else if 0%{?suse_version}
 ./configure --with-apxs=/usr/sbin/apxs2
@@ -139,5 +139,6 @@ rm -rf $RPM_BUILD_ROOT
 %{apache2_libexecdir}/*
 
 %changelog
+* Thu Jun 27 2015 andrew.seales@ed.ac.uk
 * Thu Aug 18 2011 stoppe@gmx.de
 - Initial release
