@@ -24,7 +24,7 @@ Summary: The VIM editor
 URL:     http://www.vim.org/
 Name: vim
 Version: %{baseversion}.%{beta}%{patchlevel}
-Release: 1.0%{?dist}
+Release: 1.1%{?dist}
 License: Vim and GPLv2+ and BSD and LGPLv2+ and Open Publication
 Group: Applications/Editors
 Source0: ftp://ftp.vim.org/pub/vim/unix/vim-%{baseversion}%{?beta}%{?CVSDATE}.tar.bz2
@@ -119,6 +119,7 @@ Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: python-devel ncurses-devel gettext perl-devel
 BuildRequires: perl(ExtUtils::Embed)
 BuildRequires: libacl-devel gpm-devel autoconf
+BuildRequires: libX11-devel
 %if %{WITH_SELINUX}
 BuildRequires: libselinux-devel
 %endif
@@ -339,7 +340,7 @@ make clean
  --enable-perlinterp --disable-tclinterp --with-x=no \
  --enable-gui=no --exec-prefix=%{_prefix} --enable-multibyte \
  --enable-cscope --with-modified-by="<bugzilla@redhat.com>" \
- --with-tlib=tinfo \
+ --with-tlib=tinfo --with-x \
  --with-compiledby="<bugzilla@redhat.com>" \
 %if "%{withnetbeans}" == "1"
   --enable-netbeans \
@@ -747,6 +748,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/apps/*
 
 %changelog
+* Mon Jul 20 2015 Andrew Seales <andrew.seales@ed.ac.uk> 7.4.052-1.1
+- Add X11 support so copy&paste works through SSH using local X clipboard
 * Mon Oct 07 2013 Andrew Seales <andrew.seales@ed.ac.uk> 7.4.052-1.0
 - Upgrade to Vim 7.4 + patches
 * Fri Feb 17 2012 Karsten Hopp <karsten@redhat.com> 7.2.411-1.8
