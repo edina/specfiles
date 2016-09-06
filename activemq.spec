@@ -1,7 +1,7 @@
 Summary: Apache ActiveMQ
 Name: activemq
-Version: 5.9.1
-Release: 2%{?dist}
+Version: 5.12.1
+Release: 1%{?dist}
 License: ASL 2.0
 Group: System Environment/Daemons
 URL: http://activemq.apache.org/
@@ -82,9 +82,8 @@ install %{SOURCE9} ${RPM_BUILD_ROOT}%{_initrddir}/%{name}
 install *.txt LICENSE NOTICE ${RPM_BUILD_ROOT}%{docsdir}
 cp -r docs ${RPM_BUILD_ROOT}%{docsdir}
 
-install bin/activemq.jar bin/activemq-admin ${RPM_BUILD_ROOT}%{homedir}/bin
+install bin/activemq.jar ${RPM_BUILD_ROOT}%{homedir}/bin
 install --directory ${RPM_BUILD_ROOT}/usr/bin
-%{__ln_s} -f %{homedir}/bin/activemq-admin ${RPM_BUILD_ROOT}/usr/bin
 
 # Runtime directory
 cp -r lib ${RPM_BUILD_ROOT}%{libdir}
@@ -140,7 +139,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) /etc/httpd/conf.d/activemq-httpd.conf
 %config(noreplace) /etc/%{name}/*
 %config(noreplace) /etc/sysconfig/%{name}
-%attr(755,root,root) /usr/bin/activemq-admin
 %attr(755,activemq,activemq) %dir /var/log/%{name}
 %attr(755,activemq,activemq) %dir /var/run/%{name}
 %attr(775,root,activemq) %dir %{cachedir}/data
@@ -151,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{libexecdir}/info-provider-activemq
 
 %changelog
+* Fri Nov 27 2015 Andrew Seales <andrew.seales@ed.ac.uk> - 5.12.1-1
+- Upgrade to ActiveMQ v5.12.1
+
 * Wed Dec 17 2014 Andrew Seales <andrew.seales@ed.ac.uk> - 5.9.1-2
 - Fix an issue with Queue JSP page with a bug preventing "Move" from working
 
